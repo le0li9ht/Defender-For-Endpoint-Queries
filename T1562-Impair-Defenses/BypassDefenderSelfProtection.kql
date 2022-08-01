@@ -1,0 +1,7 @@
+//MpCmdRun.exe can restore a malicious dll file which mimics the legitimate dll file associated to defender for endpoint to microsoft defender for endpoint launcher location.
+Which inturn will crash the defender for endpoint and failed to start again.
+//Also the files loaded into this location cannot be modified or deleted.
+//Using MpCmdRun.exe to retore a mal file to Microsoft Defender For Endpoint Launcher Location which inturn will disable the microsoft defender for endpoint.
+
+DeviceProcessEvents
+| where ProcessCommandLine contains "mpcmdrun" and ProcessCommandLine contains "-Restore" and ProcessCommandLine contains "-Path" and ProcessCommandLine contains "C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\"
