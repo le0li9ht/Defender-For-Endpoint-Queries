@@ -1,0 +1,63 @@
+//https://www.sentinelone.com/blog/decrypting-catb-ransomware-analyzing-their-latest-attack-methods/
+//https://www.vmray.com/cyber-security-blog/catb-ransomware-a-new-threat-exploiting-dll-side-loading/
+//https://minerva-labs.com/blog/new-catb-ransomware-employs-2-year-old-dll-hijacking-technique-to-evade-detection/
+
+//Initial dropper versions.dll
+//DeviceFileEvents
+| where ActionType contains "FileCreate" or SHA256 contains "3661ff2a050ad47fdc451aed18b88444646bb3eb6387b07f4e47d0306aac6642"
+| where FileName contains "versions.dll"
+
+//Running versions.dll file
+DeviceProcessEvents
+| where ProcessCommandLine contains "rundll32" and ProcessCommandLine contains "versions.dll"
+
+DeviceProcessEvents
+| where InitiatingProcessFileName contains "rundll32"
+| where FileName contains "versions.dll"
+
+//versions.dll creates the malicious dll oci.dll under the path c:\\windows\system32
+DeviceFileEvents
+| where ActionType contains "FileCreate"
+| where FolderPath contains "c:\\windows\\system32"
+| where FileName=="oci.dll"
+
+//DLL search-order hijacking - loading oci.dll into //C:\Windows\System32\msdtc.exe
+DeviceImageLoadEvents
+| where InitiatingProcessFileName contains "msdtc"
+| where FileName in ('oci.dll','COMRES.DLL','msdtcVSp1res.dll')
+
+
+//Killing msdtc once the persistence modifcation done to it.
+  //cmd.exe /c taskill /f /im msdtc.exe
+	//   /f filter
+	//  /im imagename (the filter)
+DeviceProcessEvents
+| where ProcessCommandLine contains "taskkill" and ProcessCommandLine contains "msdtc"
+
+//Unique key creation by catB
+DeviceFileEvents
+| where ActionType contains "FileCreate"
+| where FolderPath contains "c:\\users\\public\\key"
+
+//To reach an execution with higher permissions on the system, the loader updates the user which is used to run the service to LocalSystem, which is an administrative user (Figure 7). To finally trigger the execution of CatB ransomware, the loader starts the service, which tries to load the previously dropped DLL due to its DLL Side-Loading vulnerability.
+//changed the properties of the MSDTC to autostart and LOCALSYSTEM account
+DeviceRegistryEvents
+| where RegistryKey contains "CurrentControlSet\\Services\\MSDTC"
+
+
+//Other thoughts
+//CatB Exfiltration 
+//Windows 10 email client mail messages stored in the “WindowsMail.MSMessageStore” file located in %userprofile%\AppData\Local\Microsoft\Windows Mail directory
+
+
+
+
+
+
+
+
+
+
+
+
+
