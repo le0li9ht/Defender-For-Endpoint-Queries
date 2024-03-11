@@ -16,3 +16,12 @@ DeviceFileCertificateInfo
 | where Issuer=~"DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1"
 | where Signer !~ "Anydesk Software GmbH"
 | join kind=rightsemi (DeviceProcessEvents) on SHA1
+
+//Find the versions of those anydesk software.
+DeviceFileCertificateInfo
+| where Timestamp >ago(90d)
+| where CertificateSerialNumber =~ "0dbf152deaf0b981a8a938d53f769db8" or CertificateSerialNumber=~"08AD40B260D29C4C9F5ECDA9BD93AED9"
+| where Issuer contains "DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1"
+//| where Signer !~ "Anydesk Software GmbH"
+| summarize count() by DeviceName
+| join kind=rightsemi (DeviceTvmSoftwareInventory | where SoftwareName contains "Anydesk") on DeviceName
