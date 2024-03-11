@@ -1,0 +1,18 @@
+//Certificates with weak signature hash algorithm.
+let dict1=DeviceInfo
+| where Timestamp >ago(90d)
+| summarize arg_max(Timestamp, *) by DeviceName
+| summarize count() by DeviceId, DeviceName
+| extend dict2=bag_pack(DeviceId, DeviceName)
+| summarize dict1=make_bag(dict2)
+| project dict1;
+DeviceTvmCertificateInfo
+| where SignatureAlgorithm  in ("md5RSA","sha1RSA","sha1DSA")
+| summarize InstalledDevices=array_length(make_set(DeviceId)),Instances=count() by Thumbprint
+| join (DeviceTvmCertificateInfo
+| summarize arg_max(Thumbprint,*) by Thumbprint
+| where SignatureAlgorithm  in ("md5RSA","sha1RSA","sha1DSA")
+| extend DeviceName=toscalar(dict1)[DeviceId]
+| project DeviceName,IssuedTo=tostring(IssuedTo["CommonName"]),IssuedBy=tostring(IssuedBy.["CommonName"]),KeySize, SignatureAlgorithm, IssueDate, ExpirationDate,Thumbprint,Path, ExtendedKeyUsage, SerialNumber
+) on Thumbprint
+| project-reorder Thumbprint, DeviceName, InstalledDevices
