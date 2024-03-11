@@ -1,4 +1,5 @@
 //Compromised Anydesk Certificate Usage
+//https://anydesk.com/en/public-statement
 DeviceFileCertificateInfo
 | where Timestamp >ago(90d)
 | where CertificateSerialNumber =~ "0dbf152deaf0b981a8a938d53f769db8"
