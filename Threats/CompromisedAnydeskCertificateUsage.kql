@@ -1,7 +1,7 @@
 //Compromised Anydesk Certificate Usage
 //https://anydesk.com/en/public-statement
 //https://github.com/Neo23x0/signature-base/blob/master/yara/gen_anydesk_compromised_cert_feb23.yar
-
+//https://support.anydesk.com/knowledge/how-do-i-make-sure-i-use-anydesk-with-the-new-certificate
 DeviceFileCertificateInfo
 | where Timestamp >ago(90d)
 | where CertificateSerialNumber =~ "0dbf152deaf0b981a8a938d53f769db8"
