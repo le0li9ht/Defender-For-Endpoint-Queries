@@ -8,3 +8,11 @@ DeviceFileCertificateInfo
 | where CertificateSerialNumber =~ "0dbf152deaf0b981a8a938d53f769db8"
 | where Issuer=~"DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1"
 | where Signer !~ "Anydesk Software GmbH"
+
+
+DeviceFileCertificateInfo
+| where Timestamp >ago(90d)
+| where CertificateSerialNumber =~ "0dbf152deaf0b981a8a938d53f769db8"
+| where Issuer=~"DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1"
+| where Signer !~ "Anydesk Software GmbH"
+| join kind=rightsemi (DeviceProcessEvents) on SHA1
