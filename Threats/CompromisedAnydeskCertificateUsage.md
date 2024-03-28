@@ -1,10 +1,6 @@
 
 ### Compromised Anydesk Certificate Usage  
-References:
-* https://anydesk.com/en/public-statement
-* https://github.com/Neo23x0/signature-base/blob/master/yara/gen_anydesk_compromised_cert_feb23.yar
-* https://support.anydesk.com/knowledge/how-do-i-make-sure-i-use-anydesk-with-the-new-certificate
-* https://www.virustotal.com/gui/file/ac71f9ab4ccb920a493508b0e0577b31fe547aa07e914f58f1def47d08ebcf7d/details
+
 ```
 //Find the presence of anydesk software with compromised signing certs
 DeviceFileCertificateInfo
@@ -32,3 +28,8 @@ DeviceFileCertificateInfo
 | summarize count() by DeviceName
 | join kind=rightsemi (DeviceTvmSoftwareInventory | where SoftwareName contains "Anydesk") on DeviceName
 ```
+References:
+* https://anydesk.com/en/public-statement
+* https://github.com/Neo23x0/signature-base/blob/master/yara/gen_anydesk_compromised_cert_feb23.yar
+* https://support.anydesk.com/knowledge/how-do-i-make-sure-i-use-anydesk-with-the-new-certificate
+* https://www.virustotal.com/gui/file/ac71f9ab4ccb920a493508b0e0577b31fe547aa07e914f58f1def47d08ebcf7d/details
