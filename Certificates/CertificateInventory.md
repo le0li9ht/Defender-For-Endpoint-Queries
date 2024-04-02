@@ -2,7 +2,9 @@ The Certificate inventory lets you view a list of the certificates installed acr
 * Identify certificates that are about to expire so you can update them and prevent service disruption
 * Detect potential vulnerabilities due to the use of weak signature algorithm (e.g. SHA-1-RSA), short key size (e.g. RSA 512bit), or weak signature hash algorithm (e.g. MD5)
 * Ensure compliance with regulatory guidelines and organizational policy
+![image](https://github.com/le0li9ht/Defender-For-Endpoint-Queries/assets/34128579/0eb4df5f-680c-4cb0-93cb-fc881447dc43)
 
+If you want to get the data via KQL instead of the above GUI interface.
 Retrieve the list of certificates that are going to expire soon  
 
 ```
