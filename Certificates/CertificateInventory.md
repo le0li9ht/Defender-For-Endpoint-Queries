@@ -3,6 +3,8 @@ The Certificate inventory lets you view a list of the certificates installed acr
 * Detect potential vulnerabilities due to the use of weak signature algorithm (e.g. SHA-1-RSA), short key size (e.g. RSA 512bit), or weak signature hash algorithm (e.g. MD5)
 * Ensure compliance with regulatory guidelines and organizational policy
 
+Retrieve the list of certificates that are going to expire soon  
+
 ```
 //Certificates Going To Expire Soon(Certificates that will expire in 90 days or less)
 let dict1=DeviceInfo
@@ -25,7 +27,7 @@ DeviceTvmCertificateInfo
 ) on Thumbprint
 | project-reorder Thumbprint, DeviceName, InstalledDevices
 ```
-
+Retrieve the certificates with smaller key sizes  
 ```
 //Certificates that don't have 2048-bit keysize
 let dict1=DeviceInfo
