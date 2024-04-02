@@ -25,3 +25,24 @@ DeviceTvmCertificateInfo
 ) on Thumbprint
 | project-reorder Thumbprint, DeviceName, InstalledDevices
 ```
+
+```
+//Certificates that don't have 2048-bit keysize
+let dict1=DeviceInfo
+| where Timestamp >ago(90d)
+| summarize arg_max(Timestamp, *) by DeviceName
+| summarize count() by DeviceId, DeviceName
+| extend dict2=bag_pack(DeviceId, DeviceName)
+| summarize dict1=make_bag(dict2)
+| project dict1;
+DeviceTvmCertificateInfo
+| where KeySize in (512,1024,1536)
+| summarize InstalledDevices=array_length(make_set(DeviceId)),Instances=count() by Thumbprint
+| join (DeviceTvmCertificateInfo
+| summarize arg_max(Thumbprint,*) by Thumbprint
+| where KeySize in (512,1024,1536)
+| extend DeviceName=toscalar(dict1)[DeviceId]
+| project DeviceName,IssuedTo=tostring(IssuedTo["CommonName"]),IssuedBy=tostring(IssuedBy.["CommonName"]),KeySize, SignatureAlgorithm, IssueDate, ExpirationDate,Thumbprint,Path, ExtendedKeyUsage, SerialNumber
+) on Thumbprint
+| project-reorder Thumbprint, DeviceName, InstalledDevices
+```
